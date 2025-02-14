@@ -1,2 +1,5 @@
 # Ignore the .alx_django folder
 .alx_django/
+
+# Ensure LibraryProject is not ignored
+!LibraryProject/
