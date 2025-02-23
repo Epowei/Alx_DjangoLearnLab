@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import user_passes_test
+from .models import UserProfile
 from .models import Library
 from .models import Book
 
@@ -39,3 +41,26 @@ class CustomLoginView(LoginView):
 # Class-based view for logout (using Django's built-in LogoutView)
 class CustomLogoutView(LogoutView):
     template_name = 'relationship_app/logout.html'
+
+# Role check functions
+def is_admin(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+
+def is_librarian(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+
+def is_member(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+
+# Role-based views
+@user_passes_test(is_admin, login_url='login')
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html', {'message': 'Welcome, Admin!'})
+
+@user_passes_test(is_librarian, login_url='login')
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html', {'message': 'Welcome, Librarian!'})
+
+@user_passes_test(is_member, login_url='login')
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html', {'message': 'Welcome, Member!'})
