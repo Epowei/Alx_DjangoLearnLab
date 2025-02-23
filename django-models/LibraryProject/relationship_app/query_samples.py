@@ -31,12 +31,13 @@ def query_books_in_library(library_name):
 def query_librarian_for_library(library_name):
     try:
         library = Library.objects.get(name=library_name)
-        librarian = library.librarian
+        librarian = Librarian.objects.get(library=library)  # Using get to query librarian by library
         print(f"Librarian for {library_name}: {librarian.name}")
     except Library.DoesNotExist:
         print(f"Library '{library_name}' not found.")
     except Librarian.DoesNotExist:
         print(f"No librarian assigned to {library_name}.")
+
 
 if __name__ == "__main__":
     # Sample queries (assuming data exists)
