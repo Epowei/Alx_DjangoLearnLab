@@ -1,33 +1,51 @@
-# advanced_features_and_security/relationship_app/views.py
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import DetailView
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.views.generic.detail import DetailView
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.contrib.auth.decorators import user_passes_test, permission_required
-from .models import Book, Library, CustomUser  # Updated import
-from .forms import BookForm, CustomUserCreationForm  # Updated form
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
+from .models import UserProfile
+from .models import Library
+from .models import Book
+from .forms import BookForm
 
-# Existing views with adjustments
+# Create your views here.
+
+# Function-based view to list all books
 def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
+# Class-based view to display library details
 class LibraryDetailView(DetailView):
     model = Library
     template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
 
+# Function-based view for user registration
 def register(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST, request.FILES)  # Updated to handle files
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            return redirect('list_books')
+            login(request, user)  # Log the user in after registration
+            return redirect('list_books')  # Redirect to book list after success
     else:
-        form = CustomUserCreationForm()
+        form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-# Role check functions updated
+# Class-based view for login (using Django's built-in LoginView)
+class CustomLoginView(LoginView):
+    template_name = 'relationship_app/login.html'
+    redirect_authenticated_user = True  # Redirect if already logged in
+    next_page = 'list_books'  # Redirect to book list after login
+
+# Class-based view for logout (using Django's built-in LogoutView)
+class CustomLogoutView(LogoutView):
+    template_name = 'relationship_app/logout.html'
+
+# Role check functions
 def is_admin(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
@@ -50,7 +68,7 @@ def librarian_view(request):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html', {'message': 'Welcome, Member!'})
 
-# Permission-based views
+# New permission-based views
 @permission_required('relationship_app.can_add_book', login_url='login')
 def add_book(request):
     if request.method == 'POST':
