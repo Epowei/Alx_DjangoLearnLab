@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods, require_POST, req
 from django.http import Http404
 
 from .models import Book
-from .forms import BookForm
+from .forms import ExampleForm
 
 @login_required
 @permission_required('bookshelf.can_view_book', raise_exception=True)
@@ -41,7 +41,7 @@ def book_list(request):
 @require_http_methods(["GET", "POST"])  # Only allow GET and POST requests
 def book_create(request):
     if request.method == 'POST':
-        form = BookForm(request.POST)
+        form = ExampleForm(request.POST)
         if form.is_valid():
             try:
                 # Use a transaction to ensure database integrity
@@ -60,7 +60,7 @@ def book_create(request):
                     for error in errors:
                         form.add_error(field, error)
     else:
-        form = BookForm()
+        form = ExampleForm()
     
     return render(request, 'bookshelf/book_form.html', {'form': form, 'action': 'Create'})
 
@@ -74,7 +74,7 @@ def book_edit(request, pk):
         book = get_object_or_404(Book, pk=pk)
         
         if request.method == 'POST':
-            form = BookForm(request.POST, instance=book)
+            form = ExampleForm(request.POST, instance=book)
             if form.is_valid():
                 try:
                     with transaction.atomic():
@@ -89,7 +89,7 @@ def book_edit(request, pk):
                         for error in errors:
                             form.add_error(field, error)
         else:
-            form = BookForm(instance=book)
+            form = ExampleForm(instance=book)
         
         return render(request, 'bookshelf/book_form.html', {'form': form, 'action': 'Edit'})
     except ValueError:
