@@ -128,6 +128,9 @@ SECURE_HSTS_SECONDS = 31536000  # Enforces HTTPS for 1 year via HSTS
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Applies HSTS to subdomains
 SECURE_HSTS_PRELOAD = True  # Allows HSTS preload listing
 
+# Proxy SSL Header (for use behind a proxy like Nginx)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Recognizes HTTPS from proxy
+
 # Content Security Policy (Step 4)
 CSP_DEFAULT_SRC = ("'self'",)  # Restricts content to same origin
 CSP_SCRIPT_SRC = ("'self'",)  # Limits scripts to same origin
