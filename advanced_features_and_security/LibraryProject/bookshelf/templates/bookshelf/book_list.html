@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+</head>
+<body>
+    <h1>Books</h1>
+    <form method="get">  <!-- GET form, no CSRF needed, but included for consistency -->
+        <input type="text" name="q" value="{{ query|escape }}" placeholder="Search books">
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for book in books %}
+        <li>{{ book.title|escape }} by {{ book.author|escape }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'bookshelf:add_book' %}">Add Book</a>
+</body>
+</html>
