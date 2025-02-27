@@ -134,3 +134,30 @@ Verify that the user is assigned to the correct group
 Confirm that the group has the necessary permissions
 Ensure that views are properly decorated with permission_required
 Check that templates correctly use the perms context variable
+
+
+# Security Measures in Bookshelf App
+
+## Secure Settings
+- **`DEBUG = False`**: Prevents sensitive info leaks in production (`settings.py`).
+- **`SECURE_BROWSER_XSS_FILTER`**: Adds X-XSS-Protection header to mitigate XSS.
+- **`X_FRAME_OPTIONS = 'DENY'`**: Blocks clickjacking by disallowing iframes.
+- **`SECURE_CONTENT_TYPE_NOSNIFF`**: Stops MIME-type sniffing.
+- **`CSRF_COOKIE_SECURE`/`SESSION_COOKIE_SECURE`**: Ensures cookies require HTTPS.
+- **HTTPS**: `SECURE_SSL_REDIRECT` and HSTS enforce secure connections.
+
+## CSRF Protection
+- All POST forms (e.g., `form_example.html`) include `{% csrf_token %}` to prevent CSRF attacks, enforced by `CsrfViewMiddleware`.
+
+## Secure Views
+- **SQL Injection**: Uses ORM (`Book.objects.filter()`) for parameterized queries, avoiding raw SQL (`views.py`).
+- **Input Handling**: `BookForm` validates/sanitizes inputs; `book_list` limits query length and escapes output.
+
+## Content Security Policy
+- `django-csp` middleware restricts content to `'self'` (`settings.py`), reducing XSS risks.
+
+## Testing
+- **CSRF**: Remove `{% csrf_token %}` from `form_example.html` and submit; expect 403.
+- **XSS**: Enter `<script>alert('xss')</script>` in search; confirm it’s escaped.
+- **SQL Injection**: Try `'; DROP TABLE books; --` in search; verify table remains intact.
+- Run: `python manage.py runserver` and test locally (use `DEBUG = True` for dev).

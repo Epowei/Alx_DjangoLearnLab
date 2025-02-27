@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!bm9&zi50-7$%=o)0j*gf0$d7vh-d^c%lx4+*ilc+0djcoz4-0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     'relationship_app',  # Add the relationship_app to the list of installed apps
+    'csp',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware'
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -112,6 +114,25 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# Security Settings
+SECURE_BROWSER_XSS_FILTER = True  # Adds X-XSS-Protection header to mitigate XSS
+X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking by disallowing iframes
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME-type sniffing by browsers
+CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is sent over HTTPS only
+SESSION_COOKIE_SECURE = True  # Ensures session cookie is sent over HTTPS only
+
+# HTTPS Enforcement (enable in production)
+SECURE_SSL_REDIRECT = True  # Redirects all HTTP to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # Enforces HTTPS for 1 year via HSTS
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Applies HSTS to subdomains
+SECURE_HSTS_PRELOAD = True  # Allows HSTS preload listing
+
+# Content Security Policy (Step 4)
+CSP_DEFAULT_SRC = ("'self'",)  # Restricts content to same origin
+CSP_SCRIPT_SRC = ("'self'",)  # Limits scripts to same origin
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Allows inline styles (adjust if using external CSS)
+CSP_IMG_SRC = ("'self'",)  # Limits images to same origin
 
 
 # Static files (CSS, JavaScript, Images)
