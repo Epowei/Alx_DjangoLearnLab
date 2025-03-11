@@ -1,20 +1,41 @@
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
 
-# List all books
+# List all books with filtering, searching, and ordering
 class BookListView(generics.ListAPIView):
     """
-    GET: Retrieve a list of all books, optionally filtered by author ID.
+    GET: Retrieve a list of all books with advanced query capabilities.
+    - Filtering: Filter by title, author, and publication_year (e.g., ?title=Book&author=1&publication_year=2020).
+    - Searching: Search by title and author name (e.g., ?search=Jane).
+    - Ordering: Order by title or publication_year (e.g., ?ordering=title or ?ordering=-publication_year).
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.AllowAny]  # Anyone can view the list
 
+    # Add filtering, searching, and ordering backends
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    
+    # Define fields for filtering
+    filterset_fields = ['title', 'author', 'publication_year']
+    
+    # Define fields for searching
+    search_fields = ['title', 'author__name']  # Search in book's title and author's name
+    
+    # Define fields for ordering
+    ordering_fields = ['title', 'publication_year']
+    
+    # Default ordering (optional)
+    ordering = ['title']  # Default sort by title ascending if no ordering specified
+
     def get_queryset(self):
         """
         Customize queryset to filter books by author ID if provided in query params (e.g., ?author=1).
+        This works in addition to the filterset_fields.
         """
         queryset = Book.objects.all()
         author_id = self.request.query_params.get('author', None)
