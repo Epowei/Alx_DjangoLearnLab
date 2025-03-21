@@ -27,3 +27,32 @@ The authentication system provides:
 
 * Logout: Click “Logout” from the navigation bar.
 
+
+
+
+
+# Blog Post Management
+
+## Features
+- **List Posts**: View all blog posts on the homepage.
+- **View Post Details**: Click on a post title to view its full content.
+- **Create Post**: Authenticated users can create new posts.
+- **Edit Post**: Authors can edit their own posts.
+- **Delete Post**: Authors can delete their own posts.
+
+## URLs
+- `/`: List all posts.
+- `/posts/new/`: Create a new post.
+- `/posts/<int:pk>/`: View post details.
+- `/posts/<int:pk>/edit/`: Edit a post.
+- `/posts/<int:pk>/delete/`: Delete a post.
+
+## Permissions
+- Only authenticated users can create posts.
+- Only the author of a post can edit or delete it.
+
+## Testing
+1. Start the server: `python manage.py runserver`.
+2. Test all CRUD operations.
+3. Verify permissions for editing and deleting posts.
+

@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django_blog_db',
         'USER': 'jeff',
         'PASSWORD': 'jeff1234',
@@ -127,7 +127,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'blog:post-list'
+LOGIN_URL = 'blog:login'
 
 
