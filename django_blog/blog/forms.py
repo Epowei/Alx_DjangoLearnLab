@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.text import slugify
-from .models import Post, Comment, Tag
+from .models import Post, Comment
+from taggit.models import Tag
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -45,6 +46,15 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags_input']
+        widgets = {
+            'tags': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter tags separated by commas'
+            }),
+        }
+        help_texts = {
+            'tags': 'Enter tags separated by commas (e.g., django, python, web-dev)',
+        }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

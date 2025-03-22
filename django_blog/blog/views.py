@@ -6,7 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.db.models import Q
 from .forms import UserRegisterForm, UserUpdateForm, CommentForm, PostForm
-from .models import Post, Comment, Tag
+from .models import Post, Comment
+# Import Tag from taggit
+from taggit.models import Tag
 
 def home(request):
     posts = Post.objects.all().order_by('-published_date')
@@ -64,6 +66,8 @@ class PostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('q', '')
+        # Add common tags to context
+        context['common_tags'] = Tag.objects.all()[:10]  # Get 10 most common tags
         return context
 
 # Add a view for posts by tag
@@ -74,9 +78,9 @@ class TagPostListView(ListView):
     paginate_by = 5
     
     def get_queryset(self):
-        # Get tag by slug
-        self.tag = get_object_or_404(Tag, slug=self.kwargs.get('slug'))
-        return Post.objects.filter(tags=self.tag).order_by('-published_date')
+        tag_slug = self.kwargs.get('slug')
+        self.tag = get_object_or_404(Tag, slug=tag_slug)
+        return Post.objects.filter(tags__slug=tag_slug).order_by('-published_date')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -172,8 +176,7 @@ def search_view(request):
     
     return render(request, 'blog/search_results.html', context)
 
-# Add this class to your existing views.py file
-
+# Add the CommentCreateView
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm

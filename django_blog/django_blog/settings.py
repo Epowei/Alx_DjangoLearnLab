@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -129,5 +130,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'blog:post-list'
 LOGIN_URL = 'blog:login'
+
+# Add this at the bottom of your settings.py
+TAGGIT_CASE_INSENSITIVE = True
 
 
