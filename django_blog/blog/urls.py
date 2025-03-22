@@ -7,6 +7,7 @@ from .views import (
     PostDeleteView,
     CommentUpdateView,
     CommentDeleteView,
+    CommentCreateView,
 )
 from . import views
 from django.contrib.auth import views as auth_views
@@ -25,7 +26,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
     
     # Comment URLs
-    path('posts/<int:pk>/comment/', views.add_comment, name='add-comment'),
+    path('posts/<int:pk>/comment/', CommentCreateView.as_view(), name='add-comment'),
     path('comments/<int:pk>/edit/', CommentUpdateView.as_view(), name='comment-update'),
     path('comments/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 ]
