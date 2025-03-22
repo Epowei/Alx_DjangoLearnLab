@@ -6,7 +6,7 @@ from .models import Post, Comment
 from taggit.models import Tag
 from django.utils.safestring import mark_safe
 
-class TagWidget(forms.TextInput):
+class TagWidget():
     """
     Custom widget for rendering a more user-friendly tag input field.
     Adds a list of popular tags below the input for easy selection.
