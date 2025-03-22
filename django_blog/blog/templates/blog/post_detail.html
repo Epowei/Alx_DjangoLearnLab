@@ -2,9 +2,6 @@
 {% block content %}
     <article class="post">
         <h1>{{ object.title }}</h1>
-        <div class="post-content">
-            {{ object.content|linebreaks }}
-        </div>
         <p class="post-meta">
             By {{ object.author }} on {{ object.published_date|date:"F d, Y" }}
             {% if user == object.author %}
@@ -12,6 +9,20 @@
                 <a href="{% url 'blog:post-delete' object.id %}">Delete</a>
             {% endif %}
         </p>
+        
+        <!-- Display tags -->
+        {% if object.tags.all %}
+        <div class="post-tags">
+            Tags:
+            {% for tag in object.tags.all %}
+                <a href="{% url 'blog:tag-posts' tag.slug %}" class="tag">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="post-content">
+            {{ object.content|linebreaks }}
+        </div>
     </article>
 
     <section class="comments">

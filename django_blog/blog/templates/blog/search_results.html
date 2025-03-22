@@ -1,6 +1,8 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    <!-- Add search bar -->
+    <h1>Search Results for "{{ search_query }}"</h1>
+    
+    <!-- Search bar for new searches -->
     <div class="search-bar">
         <form method="GET" action="{% url 'blog:search' %}">
             <input type="text" name="q" placeholder="Search posts..." value="{{ search_query }}">
@@ -30,29 +32,6 @@
             <a href="{% url 'blog:post-detail' post.id %}" class="read-more">Read More</a>
         </article>
     {% empty %}
-        <p>No posts found.</p>
+        <p>No posts match your search criteria.</p>
     {% endfor %}
-    
-    <!-- Pagination -->
-    {% if is_paginated %}
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">First</a>
-                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-            {% endif %}
-            
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <a class="current-page">{{ num }}</a>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?page={{ num }}">{{ num }}</a>
-                {% endif %}
-            {% endfor %}
-            
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-            {% endif %}
-        </div>
-    {% endif %}
 {% endblock content %}

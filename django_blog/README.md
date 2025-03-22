@@ -93,4 +93,52 @@ All visitors can view comments on any blog post by visiting the post's detail pa
 * Editing: Users can only edit their own comments.
 * Deleting: Users can only delete their own comments.
 
-This implementation provides a complete comment system that integrates seamlessly with your existing blog application, following Django best practices with proper permission handling and user experience considerations.
+This implementation provides a complete comment system that integrates seamlessly with the existing blog application, following Django best practices with proper permission handling and user experience considerations.
+
+<br>
+<br>
+
+# User Documentation for Tagging and Search Features
+## Using Tags in Posts
+### 1. __Adding Tags to a Post__
+
+* When creating or editing a post, you'll find a "Tags" field
+* Enter your tags separated by commas (e.g., "python, django, tutorial")
+* Tags are automatically converted to lowercase for consistency
+
+### 2. __Viewing Posts by Tag__
+
+* On any post, click on a tag to see all posts with that same tag
+* Tags appear below the post title on both the post list and detail pages
+
+### 3. __Tag Benefits__
+
+* Tags help categorize your content
+* Readers can easily find related posts by clicking on tags
+* Tags improve the discoverability of your content
+
+## Using the Search Feature
+
+### 1. __Global Search__
+* A search bar is available in the site header on every page
+* Enter keywords to search across all blog posts
+
+### 2. Advanced Searching
+
+* Search queries match against post titles, content, and tags
+* Results are ranked by relevance
+* Use specific terms for more targeted results
+
+### 3. Search Results
+
+* The search results page shows all posts matching your query
+* Each result includes the post title, author, date, and a content preview
+* Click on any result to view the full post
+
+### 4. Empty Search Results
+
+* If no posts match your search, you'll see a message indicating this
+* Try broadening your search terms for more results
+
+
+This implementation provides a robust tagging and search system for the Django blog. Users can easily categorize their posts with tags and find content through a comprehensive search feature. The integration follows Django best practices and offers a seamless user experience.

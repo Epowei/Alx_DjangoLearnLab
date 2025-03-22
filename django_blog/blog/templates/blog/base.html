@@ -13,6 +13,7 @@
             <ul>
                 <li><a href="{% url 'blog:post-list' %}">Home</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'blog:post-create' %}">New Post</a></li>
                     <li><a href="{% url 'blog:profile' %}">Profile</a></li>
                     <li><a href="{% url 'blog:logout' %}">Logout</a></li>
                 {% else %}
@@ -20,6 +21,13 @@
                     <li><a href="{% url 'blog:register' %}">Register</a></li>
                 {% endif %}
             </ul>
+            <!-- Global search bar -->
+            <div class="global-search">
+                <form method="GET" action="{% url 'blog:search' %}">
+                    <input type="text" name="q" placeholder="Search...">
+                    <button type="submit">🔍</button>
+                </form>
+            </div>
         </nav>
     </header>
     
