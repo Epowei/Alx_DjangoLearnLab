@@ -1,9 +1,8 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .serializers import UserRegistrationSerializer, LoginSerializer, UserSerializer
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
@@ -35,13 +34,26 @@ class LoginView(generics.GenericAPIView):
 
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         return self.request.user
 
+# New view to list all users
+class UserListView(generics.ListAPIView):
+    """List all users in the system"""
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Add the request to context so UserSerializer can check if user is following
+        context['request'] = self.request
+        return context
+
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def follow_user(request, user_id):
     """API endpoint for following a user"""
     user_to_follow = get_object_or_404(CustomUser, id=user_id)
@@ -64,7 +76,7 @@ def follow_user(request, user_id):
     )
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def unfollow_user(request, user_id):
     """API endpoint for unfollowing a user"""
     user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
@@ -81,7 +93,7 @@ def unfollow_user(request, user_id):
     )
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def get_followers(request):
     """Get list of users following the current user"""
     followers = request.user.followers.all()
@@ -93,7 +105,7 @@ def get_followers(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def get_following(request):
     """Get list of users the current user is following"""
     following = request.user.following.all()
