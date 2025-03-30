@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets, permissions, filters, status
+from django.shortcuts import render
+from rest_framework import viewsets, permissions, filters, status, generics  # Add generics here
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Post, Comment, Like
@@ -88,7 +88,8 @@ def feed(request):
 @permission_classes([IsAuthenticated])
 def like_post(request, pk):
     """Like a post"""
-    post = get_object_or_404(Post, pk=pk)
+    # Use generics.get_object_or_404 instead of get_object_or_404
+    post = generics.get_object_or_404(Post, pk=pk)
     
     # Check if user already liked this post
     like, created = Like.objects.get_or_create(user=request.user, post=post)
@@ -118,7 +119,8 @@ def like_post(request, pk):
 @permission_classes([IsAuthenticated])
 def unlike_post(request, pk):
     """Unlike a post"""
-    post = get_object_or_404(Post, pk=pk)
+    # Update this line to use generics.get_object_or_404
+    post = generics.get_object_or_404(Post, pk=pk)
     
     # Try to find and delete the like
     try:
