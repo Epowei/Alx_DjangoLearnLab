@@ -140,3 +140,50 @@ Use Postman or curl to test endpoints. Include token in Authorization header for
     }
     ```
 
+<br>
+
+## API Documentation For User Follows and Feed Functionality
+
+**Follow Management**
+
+1. Follow User
+
+    * URL: POST /api/follow/{user_id}/
+    * Description: Follow a user with the given ID
+    * Authentication: Required
+    * Response:
+        * 200 OK - Successfully followed user
+        * 400 Bad Request - Already following or trying to follow yourself
+
+2. Unfollow User
+
+    * URL: POST /api/unfollow/{user_id}/
+    * Description: Unfollow a user you're currently following
+    * Authentication: Required
+    * Response:
+        * 200 OK - Successfully unfollowed user
+        * 400 Bad Request - Not following the user
+
+3. Get Followers
+
+    * URL: GET /api/followers/
+    * Description: List all users who follow you
+    * Authentication: Required
+    * Response: Array of user objects
+4. Get Following
+
+    * URL: GET /api/following/
+    * Description: List all users you follow
+    * Authentication: Required
+    * Response: Array of user objects
+
+__Feed__
+1. View Feed
+    * URL: GET /api/feed/
+    * Description: Get posts from users you follow, newest first
+    * Authentication: Required
+    * Query Parameters:
+        * page: Page number (default: 1)
+        * page_size: Number of posts per page (default: 10, max: 100)
+    * Response: Paginated list of post objects
+

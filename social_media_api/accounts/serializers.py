@@ -4,10 +4,20 @@ from rest_framework.authtoken.models import Token
 from .models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
+    followers_count = serializers.ReadOnlyField()
+    following_count = serializers.ReadOnlyField()
+    is_following = serializers.SerializerMethodField()
+    
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
-
+        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 
+                  'followers_count', 'following_count', 'is_following']
+        
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.followers.filter(id=request.user.id).exists()
+        return False
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
