@@ -187,3 +187,79 @@ __Feed__
         * page_size: Number of posts per page (default: 10, max: 100)
     * Response: Paginated list of post objects
 
+
+<br>
+
+## API Documentation For Notifications and Likes Functionality
+
+### Like System
+1. Like a Post
+    * URL: `POST /api/posts/{post_id}/like/`
+    * Description: Like a specific post
+    * Authentication: Required
+    * Response:
+        * Success (201): `{"success": "You liked the post 'Post Title'"}`
+        * Error (400): `{"error": "You have already liked this post."}`
+2. Unlike a Post
+
+    * URL: `POST /api/posts/{post_id}/unlike/`
+    * Description: Remove a like from a post
+    * Authentication: Required
+    * Response:
+        * Success (200): `{"success": "You unliked the post 'Post Title'"}`
+        * Error (400): `{"error": "You have not liked this post."}`
+
+### Notification System
+1. View Notifications
+
+    * URL: `GET /api/notifications/`
+    * Description: List all notifications for the current user
+    * Authentication: Required
+    * Response: Array of notification objects with recipient, actor, verb, timestamp, etc.
+
+2. Mark Notification as Read
+
+    * URL: `POST /api/notifications/{notification_id}/read/`
+    * Description: Mark a specific notification as read
+    * Authentication: Required
+    * Response:
+        * Success (200): `{"success": "Notification marked as read"}`
+       * Error (404): `{"error": "Notification not found"}`
+
+3. Mark All Notifications as Read
+
+    * URL: `POST /api/notifications/read-all/`
+    * Description: Mark all notifications as read
+    * Authentication: Required
+    * Response: `{"success": "All notifications marked as read"}`
+
+
+### Testing
+
+**Test Like Functionality**
+
+Using Postman:
+
+1. Login to get an authentication token
+2. Create a post or use an existing one
+3. Like the post:
+    * POST to `/api/posts/1/like/` with Authentication header
+4. Verify with GET to `/api/posts/1/` that is_liked is now true
+5. Try liking again to check the duplicate prevention
+6. Unlike the post:
+    * POST to `/api/posts/1/unlike/` with Authentication header
+
+
+### Test Notification Functionality
+1. Create notifications through actions:
+    * Like someone else's post
+    * Comment on someone else's post
+    * Follow another user
+2. Check notifications:
+    * GET to `/api/notifications/` to see all your notifications
+3. Mark as read:
+* POST to `/api/notifications/1/read/` to mark one as read
+* POST to `/api/notifications/read-all/` to mark all as read
+
+This implementation provides a comprehensive likes and notifications system for the social media API, enhancing user engagement and interactivity.
+

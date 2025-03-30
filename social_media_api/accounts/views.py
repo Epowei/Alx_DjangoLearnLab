@@ -6,6 +6,8 @@ from .serializers import UserRegistrationSerializer, LoginSerializer, UserSerial
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -65,6 +67,15 @@ def follow_user(request, user_id):
         )
     
     if request.user.follow(user_to_follow):
+        # Create notification
+        Notification.objects.create(
+            recipient=user_to_follow,
+            actor=request.user,
+            verb="started following you",
+            content_type=ContentType.objects.get_for_model(user_to_follow),
+            object_id=user_to_follow.id
+        )
+        
         return Response(
             {"success": f"You are now following {user_to_follow.username}"},
             status=status.HTTP_200_OK
